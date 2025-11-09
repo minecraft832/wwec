@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <title>Chillsub - Movie Streaming</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Roboto", sans-serif;
+            background-color: #000;
+            color: white;
+            overflow-x: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .navbar {
+            width: 100%;
+            height: 50px;
+            background-color: black;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            transition: all 0.5s ease;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+            height: 100%;
+            color: white;
+            font-family: "Sen", sans-serif;
+            transition: all 0.5s ease;
+        }
+
+        .logo-container {
+            flex: 1;
+        }
+
+        .logo {
+            font-size: 30px;
+            color: #4dbf00;
+        }
+
+        .menu-container {
+            flex: 6;
+        }
+
+        .menu-list {
+            display: flex;
+            list-style: none;
+        }
+
+        .menu-list-item {
+            margin-right: 30px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .menu-list-item:hover {
+            color: #4dbf00;
+        }
+
+        .menu-list-item.active {
+            font-weight: bold;
+            color: #4dbf00;
+        }
+        
+        .profile-container {
+            flex: 2;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .profile-text-container {
+            margin: 0 20px;
+        }
+
+        .profile-picture {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: none; /* Hide profile picture */
+        }
+
+        .toggle {
+            width: 40px;
+            height: 20px;
+            background-color: white;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            position: relative;
+        }
+
+        .toggle-icon {
+            color: goldenrod;
+        }
+
+        .toggle-ball {
+            width: 18px;
+            height: 18px;
+            background-color: black;
+            position: absolute;
+            right: 1px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 1s ease all;
+        }
+
+        .sidebar {
+            width: 50px;
+            height: 100%;
+            background-color: black !important; /* Ensure sidebar is always black */
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 60px;
+            transform: translateX(-100%);
+            transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28), background-color 0.5s ease;
+            z-index: 100;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar {
+            background-color: black !important;
+        }
+
+        .sidebar.active {
+            background-color: black !important;
+        }
+
+        .sidebar-toggle {
+            position: fixed;
+            top: 70px;
+            left: 10px;
+            background-color: #4dbf00;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 101;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-toggle:hover {
+            background-color: #3a9500;
+            transform: scale(1.1);
+        }
+
+        .sidebar-toggle i {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-toggle.active i {
+            transform: rotate(180deg);
+        }
+
+        .left-menu-icon {
+            color: white !important; /* Ensure icons are always white */
+            font-size: 20px;
+            margin-bottom: 40px;
+            cursor: pointer;
+            transition: color 0.5s ease;
+        }
+
+        .left-menu-icon:hover {
+            color: #4dbf00;
+        }
+
+        .container {
+            background-color: #000;
+            min-height: calc(100vh - 50px);
+            color: white;
+            width: 100%;
+            overflow-x: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .content-container {
+            padding: 0;
+            width: 100%;
+        }
+
+        .featured-content {
+            height: 50vh;
+            padding: 50px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0), #000);
+            transition: all 0.5s ease;
+        }
+
+        .featured-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            transition: all 0.5s ease;
+        }
+
+        .featured-desc {
+            width: 500px;
+            color: lightgray;
+            margin: 30px 0;
+            transition: all 0.5s ease;
+        }
+
+        .featured-button {
+            background-color: #4dbf00;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-weight: bold;
+        }
+
+        .movie-list-container {
+            padding: 0 20px;
+            transition: all 0.5s ease;
+        }
+
+        .movie-list-wrapper {
+            position: relative;
+            overflow: hidden;
+            background-color: #000; /* Added black background */
+            transition: all 0.5s ease;
+        }
+
+        .movie-list {
+            display: flex;
+            align-items: center;
+            height: 300px;
+            transform: translateX(0);
+            transition: all 1s ease-in-out, background-color 0.5s ease;
+            background-color: #000; /* Added black background */
+        }
+
+        .movie-list-item {
+            margin-right: 30px;
+            position: relative;
+        }
+
+        .movie-list-item:hover .movie-list-item-img {
+            transform: scale(1.2);
+            margin: 0 30px;
+            opacity: 0.5;
+        }
+
+        .movie-list-item:hover .movie-list-item-title,
+        .movie-list-item:hover .movie-list-item-desc,
+        .movie-list-item:hover .movie-list-item-button {
+            opacity: 1;
+        }
+
+        .movie-list-item-img {
+            transition: all 1s ease-in-out;
+            width: 270px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 20px;
+        }
+
+        .movie-list-item-title {
+            padding: 0 10px;
+            font-size: 32px;
+            font-weight: bold;
+            position: absolute;
+            top: 10%;
+            left: 50px;
+            opacity: 0;
+            transition: 1s all ease-in-out;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .movie-list-item-desc {
+            padding: 10px;
+            font-size: 14px;
+            position: absolute;
+            top: 30%;
+            left: 50px;
+            width: 230px;
+            opacity: 0;
+            transition: 1s all ease-in-out;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .movie-list-item-button {
+            padding: 10px;
+            background-color: #4dbf00;
+            color: white;
+            border-radius: 10px;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            bottom: 20px;
+            left: 50px;
+            opacity: 0;
+            transition: 1s all ease-in-out;
+        }
+
+        .arrow {
+            font-size: 120px;
+            position: absolute;
+            top: 90px;
+            right: 0;
+            color: lightgray;
+            opacity: 0.5;
+            cursor: pointer;
+            z-index: 10; /* Added z-index to ensure arrow is above movie list */
+            background-color: rgba(0,0,0,0.5); /* Added semi-transparent background */
+            border-radius: 10px 0 0 10px; /* Added rounded corners on the left side */
+            padding-left: 10px; /* Added some padding */
+            transition: all 0.5s ease;
+        }
+
+        .container.active {
+            background-color: white;
+            color: black;
+        }
+
+        .movie-list-container.active {
+            background-color: white;
+        }
+
+        .movie-list.active {
+            background-color: white;
+        }
+
+        .movie-list-title {
+            transition: all 0.5s ease;
+        }
+
+        .movie-list-title.active {
+            color: black;
+        }
+
+        .navbar-container.active {
+            background-color: white;
+            color: black;
+        }
+
+        .navbar.active {
+            background-color: white;
+        }
+
+        body.active {
+            background-color: white;
+            color: black;
+        }
+
+        .featured-content {
+            background: linear-gradient(to bottom, rgba(0,0,0,0), #000);
+        }
+
+        .featured-content.active {
+            background: linear-gradient(to bottom, rgba(0,0,0,0), #fff);
+        }
+
+        .featured-desc.active {
+            color: #333;
+        }
+
+        .left-menu-icon.active {
+            color: black !important;
+        }
+
+        .arrow.active {
+            background-color: rgba(255,255,255,0.8);
+        }
+
+        /* Language Switcher */
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+        }
+
+        .language-option {
+            padding: 5px 10px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .language-option.active {
+            background-color: #4dbf00;
+            color: white;
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* Search Modal Styles */
+        .search-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-content {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 20px;
+        }
+
+        .search-button {
+            background-color: #4dbf00;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* About Modal Styles */
+        .about-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .about-content {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+            color: white;
+        }
+
+        /* Movie Showcase Modal Styles */
+        .movie-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .movie-modal.show {
+            opacity: 1;
+        }
+
+        .movie-content {
+            background-color: #111;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            color: white;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .movie-trailer {
+            width: 100%;
+            height: 450px;
+            border: none;
+        }
+
+        .movie-details {
+            padding: 30px;
+        }
+
+        .movie-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #4dbf00;
+        }
+
+        .movie-genre {
+            color: #ccc;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .movie-description {
+            color: lightgray;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .movie-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .movie-watch-btn {
+            background-color: #4dbf00;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .movie-watch-btn:hover {
+            background-color: #3a9500;
+        }
+
+        .movie-close-btn {
+            background-color: #666;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .movie-close-btn:hover {
+            background-color: #555;
+        }
+
+        .movie-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .about-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .about-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #4dbf00;
+        }
+
+        .about-info {
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 24px;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #4dbf00;
+        }
+
+        @media only screen and (max-width: 940px){
+            .menu-container{
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-container">
+            <div class="logo-container">
+                <h1 class="logo">Chillsub</h1>
+            </div>
+            <div class="menu-container">
+                <ul class="menu-list">
+                    <li class="menu-list-item active" data-page="home" data-en="Home" data-mn="Нүүр">Home</li>
+                    <li class="menu-list-item" data-page="movies" data-en="Movies" data-mn="Кино">Movies</li>
+                    <li class="menu-list-item" data-page="series" data-en="Series" data-mn="Цуврал">Series</li>
+                    <li class="menu-list-item" data-page="popular" data-en="Popular" data-mn="Алдартай">Popular</li>
+                </ul>
+            </div>
+            <div class="profile-container">
+                <div class="language-switcher">
+                    <div class="language-option active" data-lang="en">EN</div>
+                    <div class="language-option" data-lang="mn">MN</div>
+                </div>
+                <div class="toggle">
+                    <i class="fas fa-moon toggle-icon"></i>
+                    <i class="fas fa-sun toggle-icon"></i>
+                    <div class="toggle-ball"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" id="sidebar-toggle">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+    
+    <!-- Sidebar with only 3 buttons -->
+    <div class="sidebar" id="sidebar">
+        <i class="left-menu-icon fas fa-search" id="search-btn" data-en="Search" title="Search"></i>
+        <i class="left-menu-icon fas fa-home" id="home-btn" data-en="Home" title="Home"></i>
+        <i class="left-menu-icon fas fa-info-circle" id="about-btn" data-en="About" title="About"></i>
+    </div>
+    
+    <!-- Search Modal -->
+    <div class="search-modal" id="search-modal">
+        <div class="search-content">
+            <span class="search-close" id="search-close">&times;</span>
+            <input type="text" class="search-input" data-en="Search for movies, series, actors..." data-mn="Кино, цуврал, жүжигчид хайх..." placeholder="Search for movies, series, actors...">
+            <button class="search-button" data-en="Search" data-mn="Хайх">Search</button>
+        </div>
+    </div>
+    
+    <!-- About Modal -->
+    <div class="about-modal" id="about-modal">
+        <div class="about-content">
+            <span class="about-close" id="about-close">&times;</span>
+            <h2 class="about-title" data-en="About Chillsub" data-mn="Чиллсаб тухай">About Chillsub</h2>
+            <div class="about-info">
+                <p><strong data-en="Email:" data-mn="Имэйл:">Email:</strong> contact@chillsub.com</p>
+                <p><strong data-en="Phone:" data-mn="Утас:">Phone:</strong> +1 (555) 123-4567</p>
+                <p><strong data-en="Address:" data-mn="Хаяг:">Address:</strong> <span data-en="123 Streaming Street, Digital City, Web Country" data-mn="123 Стриминг гудамж, Дижитал хот, Вэб улс">123 Streaming Street, Digital City, Web Country</span></p>
+            </div>
+            <div class="social-links">
+                <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie Showcase Modal -->
+    <div class="movie-modal" id="movie-modal">
+        <div class="movie-content">
+            <span class="movie-close" id="movie-close">&times;</span>
+            <iframe class="movie-trailer" id="movie-trailer" src="" allowfullscreen></iframe>
+            <div class="movie-details">
+                <h2 class="movie-title" id="movie-title" data-en="" data-mn=""></h2>
+                <p class="movie-genre" id="movie-genre" data-en="" data-mn=""></p>
+                <p class="movie-description" id="movie-description" data-en="" data-mn=""></p>
+                <div class="movie-actions">
+                    <button class="movie-watch-btn" id="movie-watch-btn">Watch Now</button>
+                    <button class="movie-close-btn" id="movie-close-btn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container" id="container">
+        <div class="content-container" id="content-container">
+            <!-- Home Page -->
+            <div class="page-section active" id="home-page">
+                <div class="featured-content" style="background: linear-gradient(to bottom, rgba(0,0,0,0), #000), url('img/f-1.jpg');">
+                    <h2 class="featured-title" data-en="Featured Movie" data-mn="Онцгой кино">Featured Movie</h2>
+                    <p class="featured-desc" data-en="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto illo dolor deserunt nam assumenda ipsa eligendi dolore, ipsum id fugiat quo enim impedit, laboriosam omnis minima voluptatibus incidunt. Accusamus, provident." data-mn="Лорем ипсум, долор сит амет consectetur adipisicing элит. Иусто илло dolor deserunt нам assumenda ipsa eligendi dolore, ipsum id fugiat quo enim impedit, laboriosam omnis minima voluptatibus incidunt. Accusamus, provident.">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto illo dolor deserunt nam assumenda ipsa eligendi dolore, ipsum id fugiat quo enim impedit, laboriosam omnis minima voluptatibus incidunt. Accusamus, provident.</p>
+                    <button class="featured-button movie-showcase-btn" data-en="WATCH" data-mn="ҮЗЭХ"
+                            data-trailer="https://www.youtube.com/embed/YF1eYbfbH5k"
+                            data-title="Featured Movie" data-genre="Action, Adventure" data-description="An epic adventure featuring incredible action sequences and stunning visuals."
+                            data-stream="https://example.com/watch/featured">WATCH</button>
+                </div>
+                <div class="movie-list-container">
+                    <h1 class="movie-list-title" data-en="NEW RELEASES" data-mn="ШИНЭЭР ГАРСАН">NEW RELEASES</h1>
+                    <div class="movie-list-wrapper">
+                        <div class="movie-list">
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpeg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button movie-showcase-btn" data-en="Watch" data-mn="Үзэх"
+                                        data-trailer="https://www.youtube.com/embed/6QRvTv_tpw0"
+                                        data-title="Her" data-genre="Romance, Drama" data-description="A lonely writer develops an unlikely relationship with an operating system designed to meet his every need."
+                                        data-stream="https://example.com/watch/her">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/2.jpeg" alt="">
+                                <span class="movie-list-item-title" data-en="Star Wars" data-mn="Оддын дайн">Star Wars</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button movie-showcase-btn" data-en="Watch" data-mn="Үзэх"
+                                        data-trailer="https://www.youtube.com/embed/sGbxmsDFVnE"
+                                        data-title="Star Wars" data-genre="Sci-Fi, Action" data-description="A galactic adventure following the Skywalker family and their struggle against the dark side."
+                                        data-stream="https://example.com/watch/star-wars">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/3.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Storm" data-mn="Шуурга">Storm</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button movie-showcase-btn" data-en="Watch" data-mn="Үзэх"
+                                        data-trailer="https://www.youtube.com/embed/fB8TyLXZ7_o"
+                                        data-title="Storm" data-genre="Action, Thriller" data-description="A high-stakes action thriller following a team facing extreme weather conditions."
+                                        data-stream="https://example.com/watch/storm">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/4.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="1917" data-mn="1917">1917</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button movie-showcase-btn" data-en="Watch" data-mn="Үзэх"
+                                        data-trailer="https://www.youtube.com/embed/YqNYrYUiMfg"
+                                        data-title="1917" data-genre="War, Drama" data-description="Two young soldiers during World War I undertake a dangerous mission to deliver a message that could save 1,600 lives."
+                                        data-stream="https://example.com/watch/1917">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/5.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Avengers" data-mn="Номхон хүмүүс">Avengers</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button movie-showcase-btn" data-en="Watch" data-mn="Үзэх"
+                                        data-trailer="https://www.youtube.com/embed/eOrNdBpGMv8"
+                                        data-title="Avengers" data-genre="Action, Superhero" data-description="Earth's mightiest heroes must come together to stop Loki and his alien army from enslaving humanity."
+                                        data-stream="https://example.com/watch/avengers">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/6.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button movie-showcase-btn" data-en="Watch" data-mn="Үзэх"
+                                        data-trailer="https://www.youtube.com/embed/6QRvTv_tpw0"
+                                        data-title="Her" data-genre="Romance, Drama" data-description="A lonely writer develops an unlikely relationship with an operating system designed to meet his every need."
+                                        data-stream="https://example.com/watch/her">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/7.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button movie-showcase-btn" data-en="Watch" data-mn="Үзэх"
+                                        data-trailer="https://www.youtube.com/embed/6QRvTv_tpw0"
+                                        data-title="Her" data-genre="Romance, Drama" data-description="A lonely writer develops an unlikely relationship with an operating system designed to meet his every need."
+                                        data-stream="https://example.com/watch/her">Watch</button>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </div>
+                </div>
+                <div class="featured-content" style="background: linear-gradient(to bottom, rgba(0,0,0,0), #000), url('img/f-2.jpg');">
+                    <h2 class="featured-title" data-en="Featured Series" data-mn="Онцгой цуврал">Featured Series</h2>
+                    <p class="featured-desc" data-en="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto illo dolor deserunt nam assumenda ipsa eligendi dolore, ipsum id fugiat quo enim impedit, laboriosam omnis minima voluptatibus incidunt. Accusamus, provident." data-mn="Лорем ипсум, долор сит амет consectetur adipisicing элит. Иусто илло dolor deserunt нам assumenda ipsa eligendi dolore, ipsum id fugiat quo enim impedit, laboriosam omnis minima voluptatibus incidunt. Accusamus, provident.">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto illo dolor deserunt nam assumenda ipsa eligendi dolore, ipsum id fugiat quo enim impedit, laboriosam omnis minima voluptatibus incidunt. Accusamus, provident.</p>
+                    <button class="featured-button movie-showcase-btn" data-en="WATCH" data-mn="ҮЗЭХ"
+                            data-trailer="https://www.youtube.com/embed/YF1eYbfbH5k"
+                            data-title="Featured Series" data-genre="Drama, Mystery" data-description="A gripping series with twists and turns that will keep you on the edge of your seat."
+                            data-stream="https://example.com/watch/featured-series">WATCH</button>
+                </div>
+            </div>
+            
+            <!-- Movies Page -->
+            <div class="page-section" id="movies-page">
+                <div class="movie-list-container">
+                    <h1 class="movie-list-title" data-en="ALL MOVIES" data-mn="БҮХ КИНО">ALL MOVIES</h1>
+                    <div class="movie-list-wrapper">
+                        <div class="movie-list">
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpeg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button movie-showcase-btn" data-en="Watch" data-mn="Үзэх"
+                                        data-trailer="https://www.youtube.com/embed/6QRvTv_tpw0"
+                                        data-title="Her" data-genre="Romance, Drama" data-description="A lonely writer develops an unlikely relationship with an operating system designed to meet his every need."
+                                        data-stream="https://example.com/watch/her">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/2.jpeg" alt="">
+                                <span class="movie-list-item-title" data-en="Star Wars" data-mn="Оддын дайн">Star Wars</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/3.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Storm" data-mn="Шуурга">Storm</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/4.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="1917" data-mn="1917">1917</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/5.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Avengers" data-mn="Номхон хүмүүс">Avengers</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/6.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/7.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </div>
+                </div>
+                <div class="movie-list-container">
+                    <h1 class="movie-list-title" data-en="ACTION MOVIES" data-mn="ҮЙЛДЭЛТ КИНО">ACTION MOVIES</h1>
+                    <div class="movie-list-wrapper">
+                        <div class="movie-list">
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/8.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/9.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/10.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/11.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/12.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Series Page -->
+            <div class="page-section" id="series-page">
+                <div class="movie-list-container">
+                    <h1 class="movie-list-title" data-en="POPULAR SERIES" data-mn="АЛДАРТАЙ ЦУВРАЛУУД">POPULAR SERIES</h1>
+                    <div class="movie-list-wrapper">
+                        <div class="movie-list">
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpeg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/2.jpeg" alt="">
+                                <span class="movie-list-item-title" data-en="Star Wars" data-mn="Оддын дайн">Star Wars</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/15.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/3.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/4.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/5.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </div>
+                </div>
+                <div class="movie-list-container">
+                    <h1 class="movie-list-title" data-en="NEW SERIES" data-mn="ШИНЭ ЦУВРАЛУУД">NEW SERIES</h1>
+                    <div class="movie-list-wrapper">
+                        <div class="movie-list">
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/17.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/18.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/19.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/7.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique accusantium.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Popular Page -->
+            <div class="page-section" id="popular-page">
+                <div class="movie-list-container">
+                    <h1 class="movie-list-title" data-en="TRENDING NOW" data-mn="ОДОО ТРЕНДДЭЭ">TRENDING NOW</h1>
+                    <div class="movie-list-wrapper">
+                        <div class="movie-list">
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpeg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/2.jpeg" alt="">
+                                <span class="movie-list-item-title" data-en="Star Wars" data-mn="Оддын дайн">Star Wars</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/3.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Storm" data-mn="Шуурга">Storm</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similique обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/4.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="1917" data-mn="1917">1917</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similите обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/5.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Avengers" data-mn="Номхон хүмүүс">Avengers</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugit similите обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similique accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/6.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugит similите обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/7.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugит similите обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </div>
+                </div>
+                <div class="movie-list-container">
+                    <h1 class="movie-list-title" data-en="TOP RATED" data-mn="ӨНДӨР ҮНЭЛГЭЭТЭЙ">TOP RATED</h1>
+                    <div class="movie-list-wrapper">
+                        <div class="movie-list">
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/17.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugит similите обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/18.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugит similите обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/19.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugит similите обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/7.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugит similите обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugит similите обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugит similите обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                            <div class="movie-list-item">
+                                <img class="movie-list-item-img" src="img/1.jpg" alt="">
+                                <span class="movie-list-item-title" data-en="Her" data-mn="Тэр">Her</span>
+                                <p class="movie-list-item-desc" data-en="Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium." data-mn="Лорем ипсум dolor сит амет consectetur adipisicing элит. At hic fugит similите обвиняемый.">Lorem ipsum dolor sit amet consectetur adipisicing elit. At hic fugit similite accusantium.</p>
+                                <button class="movie-list-item-button" data-en="Watch" data-mn="Үзэх">Watch</button>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const arrows = document.querySelectorAll(".arrow");
+        const movieLists = document.querySelectorAll(".movie-list");
+
+        // Fixed movie list scrolling with cross-browser compatibility
+        arrows.forEach((arrow, i) => {
+            const itemNumber = movieLists[i].querySelectorAll("img").length;
+            let clickCounter = 0;
+            arrow.addEventListener("click", () => {
+                const ratio = Math.floor(window.innerWidth / 270);
+                clickCounter++;
+                
+                // Get current transform value in a cross-browser way
+                const currentTransform = window.getComputedStyle(movieLists[i]).transform;
+                let currentX = 0;
+                
+                if (currentTransform !== 'none') {
+                    const matrix = currentTransform.match(/matrix.*\((.+)\)/)[1].split(', ');
+                    currentX = parseInt(matrix[4]);
+                }
+                
+                if (itemNumber - (4 + clickCounter) + (4 - ratio) >= 0) {
+                    movieLists[i].style.transform = `translateX(${currentX - 300}px)`;
+                } else {
+                    movieLists[i].style.transform = "translateX(0)";
+                    clickCounter = 0;
+                }
+            });
+        });
+
+        // Dark mode toggle
+        const ball = document.querySelector(".toggle-ball");
+        const items = document.querySelectorAll(
+            ".container,.movie-list-title,.navbar-container,.toggle,.movie-list-container,.movie-list,.movie-list-wrapper,body,.featured-content,.featured-title,.featured-desc,.left-menu-icon,.arrow"
+        );
+
+        ball.addEventListener("click", () => {
+            items.forEach((item) => {
+                item.classList.toggle("active");
+            });
+            ball.classList.toggle("active");
+        });
+
+        // Sidebar button functionality
+        const searchBtn = document.getElementById("search-btn");
+        const homeBtn = document.getElementById("home-btn");
+        const aboutBtn = document.getElementById("about-btn");
+        
+        const searchModal = document.getElementById("search-modal");
+        const aboutModal = document.getElementById("about-modal");
+        
+        const searchClose = document.getElementById("search-close");
+        const aboutClose = document.getElementById("about-close");
+        
+        // Sidebar toggle functionality
+        const sidebarToggle = document.getElementById("sidebar-toggle");
+        const sidebar = document.getElementById("sidebar");
+        
+        sidebarToggle.addEventListener("click", () => {
+            sidebar.classList.toggle("active");
+            sidebarToggle.classList.toggle("active");
+        });
+        
+        // Search button functionality
+        searchBtn.addEventListener("click", () => {
+            searchModal.style.display = "flex";
+            // Close sidebar when opening modal
+            sidebar.classList.remove("active");
+            sidebarToggle.classList.remove("active");
+        });
+        
+        searchClose.addEventListener("click", () => {
+            searchModal.style.display = "none";
+        });
+        
+        // Home button functionality
+        homeBtn.addEventListener("click", () => {
+            // Show home page
+            showPage('home');
+            // Close sidebar after clicking home
+            sidebar.classList.remove("active");
+            sidebarToggle.classList.remove("active");
+        });
+        
+        // About button functionality
+        aboutBtn.addEventListener("click", () => {
+            aboutModal.style.display = "flex";
+            // Close sidebar when opening modal
+            sidebar.classList.remove("active");
+            sidebarToggle.classList.remove("active");
+        });
+        
+        aboutClose.addEventListener("click", () => {
+            aboutModal.style.display = "none";
+        });
+        
+        // Close modals when clicking outside
+        window.addEventListener("click", (event) => {
+            if (event.target === searchModal) {
+                searchModal.style.display = "none";
+            }
+            if (event.target === aboutModal) {
+                aboutModal.style.display = "none";
+            }
+        });
+        
+        // Page navigation functionality
+        const menuItems = document.querySelectorAll(".menu-list-item");
+        const pageSections = document.querySelectorAll(".page-section");
+        
+        function showPage(pageId) {
+            // Hide all pages
+            pageSections.forEach(section => {
+                section.classList.remove("active");
+            });
+            
+            // Show selected page
+            document.getElementById(`${pageId}-page`).classList.add("active");
+            
+            // Update active menu item
+            menuItems.forEach(item => {
+                item.classList.remove("active");
+                if (item.getAttribute("data-page") === pageId) {
+                    item.classList.add("active");
+                }
+            });
+        }
+        
+        // Add click event to menu items
+        menuItems.forEach(item => {
+            item.addEventListener("click", () => {
+                const pageId = item.getAttribute("data-page");
+                showPage(pageId);
+            });
+        });
+        
+        // Language switcher functionality
+        const languageOptions = document.querySelectorAll(".language-option");
+        let currentLanguage = "en";
+
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+
+            // Update active language option
+            languageOptions.forEach(option => {
+                option.classList.remove("active");
+                if (option.getAttribute("data-lang") === lang) {
+                    option.classList.add("active");
+                }
+            });
+
+            // Update all text elements
+            const textElements = document.querySelectorAll("[data-en]");
+            textElements.forEach(element => {
+                const text = element.getAttribute(`data-${lang}`);
+                if (element.tagName === "INPUT") {
+                    element.placeholder = text;
+                } else if (!element.classList.contains('left-menu-icon')) {
+                    // Skip sidebar icons to prevent showing text
+                    element.textContent = text;
+                }
+            });
+
+            // Update modal content if it's open
+            const modalElements = movieModal.querySelectorAll("[data-en]");
+            modalElements.forEach(element => {
+                const text = element.getAttribute(`data-${lang}`);
+                if (element.tagName === "INPUT") {
+                    element.placeholder = text;
+                } else {
+                    element.textContent = text;
+                }
+            });
+        }
+
+        // Add click event to language options
+        languageOptions.forEach(option => {
+            option.addEventListener("click", () => {
+                const lang = option.getAttribute("data-lang");
+                switchLanguage(lang);
+            });
+        });
+
+        // Movie showcase functionality
+        const showcaseButtons = document.querySelectorAll(".movie-showcase-btn");
+        const movieModal = document.getElementById("movie-modal");
+        const movieClose = document.getElementById("movie-close");
+        const movieCloseBtn = document.getElementById("movie-close-btn");
+        const movieWatchBtn = document.getElementById("movie-watch-btn");
+        const movieTrailer = document.getElementById("movie-trailer");
+        const movieTitle = document.getElementById("movie-title");
+        const movieGenre = document.getElementById("movie-genre");
+        const movieDescription = document.getElementById("movie-description");
+
+        let currentStreamUrl = "";
+
+        showcaseButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const trailer = button.getAttribute("data-trailer");
+                const title = button.getAttribute("data-title");
+                const genre = button.getAttribute("data-genre");
+                const description = button.getAttribute("data-description");
+                const stream = button.getAttribute("data-stream");
+
+                movieTrailer.src = trailer;
+                movieTitle.setAttribute("data-en", title);
+                movieTitle.setAttribute("data-mn", title); // Same title for both languages
+                movieGenre.setAttribute("data-en", genre);
+                movieGenre.setAttribute("data-mn", genre); // Same genre for both languages
+                movieDescription.setAttribute("data-en", description);
+                movieDescription.setAttribute("data-mn", description); // Same description for both languages
+
+                // Apply current language
+                movieTitle.textContent = title;
+                movieGenre.textContent = genre;
+                movieDescription.textContent = description;
+
+                currentStreamUrl = stream;
+
+                movieModal.style.display = "flex";
+                setTimeout(() => {
+                    movieModal.classList.add("show");
+                }, 10);
+            });
+        });
+
+        movieClose.addEventListener("click", () => {
+            movieModal.classList.remove("show");
+            setTimeout(() => {
+                movieModal.style.display = "none";
+                movieTrailer.src = "";
+            }, 300);
+        });
+
+        movieCloseBtn.addEventListener("click", () => {
+            movieModal.classList.remove("show");
+            setTimeout(() => {
+                movieModal.style.display = "none";
+                movieTrailer.src = "";
+            }, 300);
+        });
+
+        movieWatchBtn.addEventListener("click", () => {
+            if (currentStreamUrl) {
+                window.open(currentStreamUrl, "_blank");
+            }
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener("click", (event) => {
+            if (event.target === movieModal) {
+                movieModal.classList.remove("show");
+                setTimeout(() => {
+                    movieModal.style.display = "none";
+                    movieTrailer.src = "";
+                }, 300);
+            }
+        });
+    </script>
+</body>
+</html>
